@@ -1,1 +1,3 @@
-# AI-Utility-Hub
+# AI Utility Hub
+
+AI Utility Hub is a practical, multi-purpose web application designed to bring commonly useful AI-powered tools together in one place. The project aims to provide features such as speech-to-text, text-to-speech, language translation, code-to-pseudocode conversion, simplified code explanations for non-technical users, and an interactive AI chatbot. The application is being developed with **React** for the frontend and **Python Flask** for the backend, with **PostgreSQL** planned for data storage. The project is being built as a hands-on learning project to explore modern web development, APIs, AI integration, database management, Git/GitHub, and deployment. The long-term goal is to turn it into a simple, practical utility that can be useful in everyday tasks. 
