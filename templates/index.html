@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Utility Hub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="app">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-icon">AI</div>
+                <div>
+                    <h2>AI Utility Hub</h2>
+                    <p>Smart tools in one place</p>
+                </div>
+            </div>
+
+            <nav>
+                <button class="nav-btn active" data-target="dashboard">🏠 Dashboard</button>
+                <button class="nav-btn" data-target="speech">🎤 Speech to Text</button>
+                <button class="nav-btn" data-target="tts">🔊 Text to Speech</button>
+                <button class="nav-btn" data-target="translator">🌐 Translator</button>
+                <button class="nav-btn" data-target="code">💻 Code Explainer</button>
+                <button class="nav-btn" data-target="chat">🤖 AI Chatbot</button>
+            </nav>
+
+            <!-- THEME SWITCHER -->
+            <div class="theme-switcher">
+                <button id="themeToggle" class="theme-toggle" type="button" aria-label="Toggle theme">
+                    <span>Appearance</span>
+                    <div class="switch-track">
+                        <div class="switch-knob"></div>
+                    </div>
+                </button>
+            </div>
+
+            <div class="sidebar-footer">
+                <p>AI Utility Hub</p>
+                <span id="aiStatus">Checking server...</span>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main">
+
+            <!-- DASHBOARD SECTION -->
+            <section id="dashboard" class="section active">
+                <div class="header">
+                    <span class="eyebrow">WELCOME TO AI UTILITY HUB</span>
+                    <h1>Your everyday AI assistant</h1>
+                    <p>Speech, language, programming and conversation tools — all in one place.</p>
+                </div>
+
+                <div class="hero">
+                    <div>
+                        <span class="hero-tag">✨ SMART AI TOOLS</span>
+                        <h2>One platform.<br>Multiple possibilities.</h2>
+                        <p>Convert speech into text, listen to written content, translate languages, understand code and interact with an AI assistant.</p>
+                        <button class="hero-button" onclick="switchSection('speech')">🎤 Try Speech to Text</button>
+                    </div>
+                    <div class="hero-ai">🤖</div>
+                </div>
+
+                <div class="section-title">
+                    <h3>Available Tools</h3>
+                </div>
+
+                <div class="tools">
+                    <div class="tool" onclick="switchSection('speech')">
+                        <div class="tool-icon">🎤</div>
+                        <h3>Speech to Text</h3>
+                        <p>Convert your voice into written text.</p>
+                        <span>Open tool →</span>
+                    </div>
+
+                    <div class="tool" onclick="switchSection('tts')">
+                        <div class="tool-icon">🔊</div>
+                        <h3>Text to Speech</h3>
+                        <p>Convert written text into speech.</p>
+                        <span>Open tool →</span>
+                    </div>
+
+                    <div class="tool" onclick="switchSection('translator')">
+                        <div class="tool-icon">🌐</div>
+                        <h3>Translator</h3>
+                        <p>Translate text between languages.</p>
+                        <span>Open tool →</span>
+                    </div>
+
+                    <div class="tool" onclick="switchSection('code')">
+                        <div class="tool-icon">💻</div>
+                        <h3>Code Explainer</h3>
+                        <p>Understand programming code easily.</p>
+                        <span>Open tool →</span>
+                    </div>
+
+                    <div class="tool" onclick="switchSection('chat')">
+                        <div class="tool-icon">🤖</div>
+                        <h3>AI Chatbot</h3>
+                        <p>Chat with your AI assistant.</p>
+                        <span>Open tool →</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SPEECH TO TEXT SECTION -->
+            <section id="speech" class="section">
+                <div class="header">
+                    <span class="eyebrow">🎤 SPEECH RECOGNITION</span>
+                    <h1>Speech to Text</h1>
+                    <p>Speak naturally and convert your voice into text.</p>
+                </div>
+
+                <div id="speechBrowserWarning" class="warning" hidden>
+                    ⚠️ Speech recognition is not supported in this browser. Please use <b>Google Chrome</b> or <b>Microsoft Edge</b>.
+                </div>
+
+                <div class="speech-layout">
+                    <div class="speech-card">
+                        <div class="card-top">
+                            <div>
+                                <h2>Voice Transcription</h2>
+                                <p>Press the microphone and start speaking.</p>
+                            </div>
+                            <div id="recStatus" class="status stopped">● Ready</div>
+                        </div>
+
+                        <div class="language-row">
+                            <label for="recognitionLang">Recognition Language</label>
+                            <select id="recognitionLang">
+                                <option value="en-US">🇺🇸 English</option>
+                                <option value="hi-IN">🇮🇳 Hindi</option>
+                                <option value="en-IN">🇮🇳 English (India)</option>
+                                <option value="es-ES">🇪🇸 Spanish</option>
+                                <option value="fr-FR">🇫🇷 French</option>
+                            </select>
+                        </div>
+
+                        <div class="mic-area">
+                            <button id="micBtn" class="mic-button" title="Start / Stop Recording" type="button">🎤</button>
+                            <div id="micText">Click to start recording</div>
+                        </div>
+
+                        <textarea id="transcriptBox" class="transcription" placeholder="Your spoken text will appear here..."></textarea>
+
+                        <div class="stats">
+                            <span id="wordCount">Words: 0</span>
+                            <span id="charCount">Characters: 0</span>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button id="toggleRecBtn" class="primary" type="button">🎤 Start / Stop</button>
+                            <button id="copyTranscriptBtn" class="secondary" type="button">📋 Copy</button>
+                            <button id="downloadTranscriptBtn" class="secondary" type="button">💾 Download</button>
+                            <button id="clearTranscriptBtn" class="danger" type="button">🗑 Clear</button>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>How it works</h3>
+                        <div class="step">
+                            <div>1</div>
+                            <p>Select your preferred language.</p>
+                        </div>
+                        <div class="step">
+                            <div>2</div>
+                            <p>Click the microphone button.</p>
+                        </div>
+                        <div class="step">
+                            <div>3</div>
+                            <p>Speak clearly into your microphone.</p>
+                        </div>
+                        <div class="step">
+                            <div>4</div>
+                            <p>Your speech is converted into text.</p>
+                        </div>
+                        <div class="tip">
+                            💡 Tip: Use Chrome or Edge, allow microphone permission when asked, and stay connected to the internet.
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TEXT TO SPEECH SECTION -->
+            <section id="tts" class="section">
+                <div class="header">
+                    <span class="eyebrow">🔊 VOICE GENERATION</span>
+                    <h1>Text to Speech</h1>
+                    <p>Convert your written text into spoken words.</p>
+                </div>
+
+                <div class="utility-card">
+                    <label for="ttsText">Enter text to speak</label>
+                    <textarea id="ttsText" placeholder="Type or paste text here..."></textarea>
+
+                    <div class="controls">
+                        <div>
+                            <label for="ttsVoice">Voice</label>
+                            <select id="ttsVoice"></select>
+                        </div>
+                        <div>
+                            <label for="ttsSpeed">Speed</label>
+                            <select id="ttsSpeed">
+                                <option value="0.75">Slow</option>
+                                <option value="1" selected>Normal</option>
+                                <option value="1.25">Fast</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons" style="margin-top: 20px;">
+                        <button id="speakBtn" class="primary" type="button">🔊 Speak</button>
+                        <button id="stopSpeakBtn" class="secondary" type="button">⏹ Stop</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TRANSLATOR SECTION -->
+            <section id="translator" class="section">
+                <div class="header">
+                    <span class="eyebrow">🌐 LANGUAGE TOOL</span>
+                    <h1>Translator</h1>
+                    <p>Translate text between different languages.</p>
+                </div>
+
+                <div class="utility-card">
+                    <label for="sourceText">Enter text (Ctrl + Enter to translate)</label>
+                    <textarea id="sourceText" placeholder="Type text to translate..."></textarea>
+
+                    <label for="targetLang">Translate to</label>
+                    <select id="targetLang">
+                        <option value="Hindi">🇮🇳 Hindi</option>
+                        <option value="Marathi">🇮🇳 Marathi</option>
+                        <option value="Spanish">🇪🇸 Spanish</option>
+                        <option value="French">🇫🇷 French</option>
+                        <option value="German">🇩🇪 German</option>
+                        <option value="Japanese">🇯🇵 Japanese</option>
+                    </select>
+
+                    <div class="action-buttons" style="margin-top: 15px;">
+                        <button id="translateBtn" class="primary" type="button">🌐 Translate</button>
+                    </div>
+
+                    <div class="result">
+                        <div class="result-head">
+                            <h3>Translation</h3>
+                            <button id="copyTranslationBtn" class="secondary copy-btn" type="button">📋 Copy</button>
+                        </div>
+                        <p id="translationOutput">Translation will appear here.</p>
+                        <span id="translateSourceNote" class="source-note"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CODE EXPLAINER SECTION -->
+            <section id="code" class="section">
+                <div class="header">
+                    <span class="eyebrow">💻 PROGRAMMING ASSISTANT</span>
+                    <h1>Code Explainer</h1>
+                    <p>Convert programming code into simple language and pseudocode.</p>
+                </div>
+
+                <div class="utility-card">
+                    <label for="codeInput">Enter code (Ctrl + Enter to explain)</label>
+                    <textarea id="codeInput" class="code-input" placeholder="Paste your Python, JavaScript, Java or C++ code here..."></textarea>
+
+                    <div class="action-buttons">
+                        <button id="explainBtn" class="primary" type="button">✨ Explain Code</button>
+                    </div>
+
+                    <div class="result">
+                        <div class="result-head">
+                            <h3>Explanation</h3>
+                            <button id="copyCodeExplanationBtn" class="secondary copy-btn" type="button">📋 Copy</button>
+                        </div>
+                        <pre id="codeOutput">Your explanation will appear here.</pre>
+                        <span id="codeSourceNote" class="source-note"></span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI CHATBOT SECTION -->
+            <section id="chat" class="section">
+                <div class="header">
+                    <span class="eyebrow">🤖 AI ASSISTANT</span>
+                    <h1>AI Chatbot</h1>
+                    <p>Ask questions and have a conversation.</p>
+                </div>
+
+                <div class="utility-card chat">
+                    <div id="chatMessages" class="messages">
+                        <div class="bot-message">
+                            <div class="avatar">🤖</div>
+                            <div>
+                                <b>AI Assistant</b>
+                                <p>Hello! 👋 I'm your AI Utility Hub assistant. How can I help you?</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-input">
+                        <input type="text" id="chatInput" placeholder="Type your message..." autocomplete="off">
+                        <button id="sendChatBtn" class="primary" type="button">Send</button>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="toast">Copied to clipboard!</div>
+
+    <!-- CLIENT SCRIPT -->
+    <script>
+        // --- Navigation & Section Switching ---
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const sections = document.querySelectorAll('.section');
+
+        function switchSection(targetId) {
+            navButtons.forEach(btn => {
+                if (btn.getAttribute('data-target') === targetId) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            sections.forEach(sec => {
+                if (sec.id === targetId) {
+                    sec.classList.add('active');
+                } else {
+                    sec.classList.remove('active');
+                }
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        navButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const target = btn.getAttribute('data-target');
+                switchSection(target);
+            });
+        });
+
+        // --- Theme Toggle ---
+        const themeToggle = document.getElementById('themeToggle');
+        const htmlElement = document.documentElement;
+
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        htmlElement.setAttribute('data-theme', savedTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // --- Server Status Check ---
+        fetch('/api/status')
+            .then(res => res.json())
+            .then(data => {
+                const statusEl = document.getElementById('aiStatus');
+                if (data.ai) {
+                    statusEl.textContent = 'AI Connected (Online)';
+                    statusEl.classList.add('online');
+                } else {
+                    statusEl.textContent = 'Offline Mode (Rules Fallback)';
+                }
+            })
+            .catch(() => {
+                const statusEl = document.getElementById('aiStatus');
+                statusEl.textContent = 'Server not reachable';
+            });
+
+        // --- Toast Utility ---
+        function showToast(message = 'Copied to clipboard!') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // --- Speech to Text Setup ---
+        const transcriptBox = document.getElementById('transcriptBox');
+        const wordCount = document.getElementById('wordCount');
+        const charCount = document.getElementById('charCount');
+        const recStatus = document.getElementById('recStatus');
+        const micBtn = document.getElementById('micBtn');
+        const toggleRecBtn = document.getElementById('toggleRecBtn');
+        const recognitionLang = document.getElementById('recognitionLang');
+
+        function updateTranscriptStats(text) {
+            const chars = text.length;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            charCount.textContent = `Characters: ${chars}`;
+            wordCount.textContent = `Words: ${words}`;
+        }
+
+        transcriptBox.addEventListener('input', () => {
+            updateTranscriptStats(transcriptBox.value);
+        });
+
+        let recognition = null;
+        let isRecording = false;
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            document.getElementById('speechBrowserWarning').hidden = false;
+        } else {
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+
+            recognition.onstart = () => {
+                isRecording = true;
+                recStatus.textContent = '● Recording';
+                recStatus.className = 'status recording';
+                micBtn.classList.add('recording');
+                document.getElementById('micText').textContent = 'Listening... Speak now';
+            };
+
+            recognition.onresult = (event) => {
+                let interim = '';
+                let final = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        final += event.results[i][0].transcript;
+                    } else {
+                        interim += event.results[i][0].transcript;
+                    }
+                }
+                if (final) {
+                    transcriptBox.value += (transcriptBox.value ? ' ' : '') + final;
+                    updateTranscriptStats(transcriptBox.value);
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.warn('Speech recognition error:', event.error);
+            };
+
+            recognition.onend = () => {
+                isRecording = false;
+                recStatus.textContent = '● Ready';
+                recStatus.className = 'status stopped';
+                micBtn.classList.remove('recording');
+                document.getElementById('micText').textContent = 'Click to start recording';
+            };
+        }
+
+        function toggleRecording() {
+            if (!recognition) {
+                alert('Speech recognition is not supported in this browser. Please use Google Chrome or Microsoft Edge.');
+                return;
+            }
+            recognition.lang = recognitionLang.value;
+            if (isRecording) {
+                recognition.stop();
+            } else {
+                try {
+                    recognition.start();
+                } catch (e) {
+                    recognition.stop();
+                }
+            }
+        }
+
+        micBtn.addEventListener('click', toggleRecording);
+        toggleRecBtn.addEventListener('click', toggleRecording);
+
+        document.getElementById('copyTranscriptBtn').addEventListener('click', () => {
+            navigator.clipboard.writeText(transcriptBox.value);
+            showToast('Transcription copied!');
+        });
+
+        document.getElementById('clearTranscriptBtn').addEventListener('click', () => {
+            transcriptBox.value = '';
+            updateTranscriptStats('');
+        });
+
+        document.getElementById('downloadTranscriptBtn').addEventListener('click', () => {
+            const blob = new Blob([transcriptBox.value], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'transcription.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // --- Text to Speech Setup ---
+        const ttsVoice = document.getElementById('ttsVoice');
+        let synthVoices = [];
+
+        function populateVoices() {
+            if (!window.speechSynthesis) return;
+            synthVoices = window.speechSynthesis.getVoices();
+            ttsVoice.innerHTML = '';
+            synthVoices.forEach((voice, index) => {
+                const opt = document.createElement('option');
+                opt.value = index;
+                opt.textContent = `${voice.name} (${voice.lang})`;
+                ttsVoice.appendChild(opt);
+            });
+        }
+
+        if (window.speechSynthesis) {
+            populateVoices();
+            window.speechSynthesis.onvoiceschanged = populateVoices;
+        }
+
+        document.getElementById('speakBtn').addEventListener('click', () => {
+            if (!window.speechSynthesis) {
+                alert('Text to speech is not supported in this browser.');
+                return;
+            }
+            window.speechSynthesis.cancel();
+            const text = document.getElementById('ttsText').value.trim();
+            if (!text) return;
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            const selectedVoiceIndex = ttsVoice.value;
+            if (synthVoices[selectedVoiceIndex]) {
+                utterance.voice = synthVoices[selectedVoiceIndex];
+            }
+            utterance.rate = parseFloat(document.getElementById('ttsSpeed').value) || 1;
+            window.speechSynthesis.speak(utterance);
+        });
+
+        document.getElementById('stopSpeakBtn').addEventListener('click', () => {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+        });
+
+        // --- Translator Setup ---
+        async function handleTranslate() {
+            const text = document.getElementById('sourceText').value.trim();
+            const language = document.getElementById('targetLang').value;
+            const outputEl = document.getElementById('translationOutput');
+            const noteEl = document.getElementById('translateSourceNote');
+            const btn = document.getElementById('translateBtn');
+
+            if (!text) {
+                outputEl.textContent = 'Please enter some text.';
+                return;
+            }
+
+            btn.disabled = true;
+            outputEl.textContent = 'Translating...';
+            noteEl.textContent = '';
+
+            try {
+                const res = await fetch('/api/translate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text, language })
+                });
+                const data = await res.json();
+                outputEl.textContent = data.translation || 'No translation returned.';
+                noteEl.textContent = `Source: ${data.source === 'ai' ? 'AI Model' : 'Offline Fallback'}`;
+                outputEl.classList.add('fade');
+                setTimeout(() => outputEl.classList.remove('fade'), 400);
+            } catch (err) {
+                outputEl.textContent = 'Translation failed due to a network error.';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        document.getElementById('translateBtn').addEventListener('click', handleTranslate);
+        document.getElementById('sourceText').addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                handleTranslate();
+            }
+        });
+
+        document.getElementById('copyTranslationBtn').addEventListener('click', () => {
+            navigator.clipboard.writeText(document.getElementById('translationOutput').textContent);
+            showToast('Translation copied!');
+        });
+
+        // --- Code Explainer Setup ---
+        async function handleExplainCode() {
+            const code = document.getElementById('codeInput').value.trim();
+            const outputEl = document.getElementById('codeOutput');
+            const noteEl = document.getElementById('codeSourceNote');
+            const btn = document.getElementById('explainBtn');
+
+            if (!code) {
+                outputEl.textContent = 'Please enter some code first.';
+                return;
+            }
+
+            btn.disabled = true;
+            outputEl.textContent = 'Analyzing code...';
+            noteEl.textContent = '';
+
+            try {
+                const res = await fetch('/api/explain-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code })
+                });
+                const data = await res.json();
+                outputEl.textContent = data.result || 'No explanation returned.';
+                noteEl.textContent = `Source: ${data.source === 'ai' ? 'AI Model' : 'Rule-Based Engine'}`;
+                outputEl.classList.add('fade');
+                setTimeout(() => outputEl.classList.remove('fade'), 400);
+            } catch (err) {
+                outputEl.textContent = 'Code explanation failed due to a network error.';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        document.getElementById('explainBtn').addEventListener('click', handleExplainCode);
+        document.getElementById('codeInput').addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                handleExplainCode();
+            }
+        });
+
+        document.getElementById('copyCodeExplanationBtn').addEventListener('click', () => {
+            navigator.clipboard.writeText(document.getElementById('codeOutput').textContent);
+            showToast('Explanation copied!');
+        });
+
+        // --- Chatbot Setup ---
+        const chatMessages = document.getElementById('chatMessages');
+        const chatInput = document.getElementById('chatInput');
+        const sendChatBtn = document.getElementById('sendChatBtn');
+        let chatHistory = [];
+
+        function addMessage(role, content) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = role === 'user' ? 'user-message' : 'bot-message';
+
+            if (role === 'bot') {
+                const avatar = document.createElement('div');
+                avatar.className = 'avatar';
+                avatar.textContent = '🤖';
+                msgDiv.appendChild(avatar);
+            }
+
+            const innerDiv = document.createElement('div');
+            if (role === 'bot') {
+                const titleB = document.createElement('b');
+                titleB.textContent = 'AI Assistant';
+                innerDiv.appendChild(titleB);
+            }
+
+            const p = document.createElement('p');
+            p.textContent = content; // XSS Safe
+            innerDiv.appendChild(p);
+            msgDiv.appendChild(innerDiv);
+
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addTypingIndicator() {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'bot-message';
+            msgDiv.id = 'typingIndicator';
+
+            const avatar = document.createElement('div');
+            avatar.className = 'avatar';
+            avatar.textContent = '🤖';
+            msgDiv.appendChild(avatar);
+
+            const innerDiv = document.createElement('div');
+            const dots = document.createElement('div');
+            dots.className = 'dots';
+            dots.innerHTML = '<i></i><i></i><i></i>';
+            innerDiv.appendChild(dots);
+            msgDiv.appendChild(innerDiv);
+
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) indicator.remove();
+        }
+
+        async function handleSendMessage() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            chatInput.value = '';
+            addMessage('user', message);
+            chatHistory.push({ role: 'user', content: message });
+
+            sendChatBtn.disabled = true;
+            addTypingIndicator();
+
+            try {
+                const res = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message, history: chatHistory })
+                });
+                const data = await res.json();
+                removeTypingIndicator();
+
+                const reply = data.reply || "Sorry, I couldn't process that.";
+                addMessage('bot', reply);
+                chatHistory.push({ role: 'assistant', content: reply });
+            } catch (err) {
+                removeTypingIndicator();
+                addMessage('bot', 'Network error occurred. Please check your connection.');
+            } finally {
+                sendChatBtn.disabled = false;
+                chatInput.focus();
+            }
+        }
+
+        sendChatBtn.addEventListener('click', handleSendMessage);
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                handleSendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
